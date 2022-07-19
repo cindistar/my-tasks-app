@@ -30,7 +30,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     } else {
       newTask.add(event.task);
     }
-    // final newTask = TaskModel(
+    // final newTask = TaskMode(
     //   title: event.task.title,
     //   description: event.task.description,
     //   date: event.task.date,
