@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:my_tasks_app/models/task_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:my_tasks_app/bloc/task_bloc.dart';
 import 'package:my_tasks_app/resources/colors.dart';
 import 'package:my_tasks_app/widgets/add_task_widget.dart';
 import 'package:my_tasks_app/widgets/remove_task_widget.dart';
 import 'package:my_tasks_app/widgets/task_card_widget.dart';
-import 'package:my_tasks_app/utils/task_helper.dart' as task_helper;
+//import 'package:my_tasks_app/utils/task_helper.dart' as task_helper;
 
-class MyTasksScreen extends StatelessWidget {
-  MyTasksScreen({Key? key}) : super(key: key);
+class MyTasksScreen extends StatefulWidget {
+  const MyTasksScreen({Key? key}) : super(key: key);
 
-  final tasksList = List<TaskModel>.from(task_helper.tasks);
+  @override
+  State<MyTasksScreen> createState() => _MyTasksScreenState();
+}
+
+class _MyTasksScreenState extends State<MyTasksScreen> {
+  //final tasksList = List<TaskModel>.from(task_helper.tasks);
+  String myTaskAppBarTitle = 'My Tasks';
 
   @override
   Widget build(BuildContext context) {
@@ -20,11 +27,11 @@ class MyTasksScreen extends StatelessWidget {
           toolbarHeight: 80,
           elevation: 0,
           backgroundColor: TasksColors.primaryGray,
-          title: const Padding(
-            padding: EdgeInsets.only(left: 10, top: 30),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 10, top: 30),
             child: Text(
-              'My Tasks',
-              style: TextStyle(
+              myTaskAppBarTitle,
+              style: const TextStyle(
                 color: TasksColors.blackNight,
                 fontWeight: FontWeight.w700,
                 fontSize: 26,
@@ -32,39 +39,48 @@ class MyTasksScreen extends StatelessWidget {
             ),
           ),
         ),
-        body: Column(
-          children: [
-            const SizedBox(height: 30),
-            Expanded(
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: tasksList.length,
-                itemBuilder: (context, index) {
-                  final task = tasksList[index];
-                  return TaskCardWidget(
-                    taskName: task.title,
-                    taskDescription: task.description,
-                    taskDate: task.date,
-                    onRemoveTask: () => showModalBottomSheet(
-                      isDismissible: true,
-                      context: context,
-                      builder: (BuildContext context) {
-                        return const SizedBox(
-                          height: 150,
-                          child: RemoveTaskWidget(),
-                        );
-                      },
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.vertical(
-                          top: Radius.circular(40.0),
+        body: BlocBuilder<TaskBloc, TaskState>(
+          builder: (context, state) {
+            final taskList = state.taskList;
+            return Column(
+              children: [
+                const SizedBox(height: 30),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: taskList.length,
+                    itemBuilder: (context, index) {
+                      final task = taskList[index];
+                      return TaskCardWidget(
+                        taskName: task.title,
+                        taskDescription: task.description,
+                        taskDate: task.date,
+                        onRemoveTask: () => showModalBottomSheet(
+                          isDismissible: true,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SizedBox(
+                              height: 150,
+                              child: RemoveTaskWidget(
+                                title: task.title,
+                                description: task.description,
+                                date: task.date,
+                              ),
+                            );
+                          },
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(40.0),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            );
+          },
         ),
         floatingActionButton: Padding(
           padding: const EdgeInsets.only(right: 14, bottom: 14),
