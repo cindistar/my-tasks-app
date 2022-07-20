@@ -43,6 +43,7 @@ class _MyTasksScreenState extends State<MyTasksScreen> {
           builder: (context, state) {
             final taskList = state.taskList;
             return Column(
+              key: const Key('column-key'),
               children: [
                 const SizedBox(height: 30),
                 Expanded(
@@ -62,6 +63,7 @@ class _MyTasksScreenState extends State<MyTasksScreen> {
                             return SizedBox(
                               height: 150,
                               child: RemoveTaskWidget(
+                                key: const Key('remove-key'),
                                 title: task.title,
                                 description: task.description,
                                 date: task.date,

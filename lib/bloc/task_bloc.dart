@@ -30,7 +30,7 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
     } else {
       newTask.add(event.task);
     }
-    // final newTask = TaskMode(
+    // final newTask = TaskModel(
     //   title: event.task.title,
     //   description: event.task.description,
     //   date: event.task.date,
@@ -43,7 +43,6 @@ class TaskBloc extends Bloc<TaskEvent, TaskState> {
   void taskRemoved(TaskRemovedEvent event, Emitter<TaskState> emit) {
     final newTasks = state.taskList.where((TaskModel task) => task.title != event.task.title).toList();
     //final newTask = List<TaskModel>.from(state.taskList);
-
 
     emit(TaskState(taskList: newTasks));
   }
